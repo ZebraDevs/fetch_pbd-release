@@ -1,0 +1,748 @@
+<link rel='import' href='../bower_components/polymer/polymer.html'>
+<link rel='import' href='../bower_components/iron-collapse/iron-collapse.html'>
+<link rel='import' href='../bower_components/iron-flex-layout/iron-flex-layout-classes.html'>
+<link href='../bower_components/iron-icons/iron-icons.html' rel='import'>
+<link href='../bower_components/iron-icons/av-icons.html' rel='import'>
+<link href='../bower_components/iron-icons/image-icons.html' rel='import'>
+<link rel='import' href='../bower_components/iron-resizable-behavior/iron-resizable-behavior.html'>
+<link rel='import' href='../bower_components/paper-button/paper-button.html'>
+<link rel='import' href='../bower_components/paper-drawer-panel/paper-drawer-panel.html'>
+<link rel='import' href='../bower_components/paper-fab/paper-fab.html'>
+<link rel='import' href='../bower_components/paper-header-panel/paper-header-panel.html'>
+<link rel='import' href='../bower_components/paper-item/paper-item.html'>
+<link rel='import' href='../bower_components/paper-menu-button/paper-menu-button.html'>
+<link rel='import' href='../bower_components/paper-menu/paper-menu.html'>
+<link rel='import' href='../bower_components/paper-styles/color.html'>
+<link rel='import' href='../bower_components/paper-styles/typography.html'>
+<link rel='import' href='../bower_components/paper-toolbar/paper-toolbar.html'>
+<link rel='import' href='../bower_components/paper-tooltip/paper-tooltip.html'>
+<link rel='import' href='../bower_components/paper-input/paper-input.html'>
+<link rel='import' href='../bower_components/paper-dialog/paper-dialog.html'>
+<link rel='import' href='imports.html'>
+
+<dom-module id='current-action'>
+  <template>
+    <style include='iron-flex iron-flex-alignment'>
+    <style is='custom-style'>
+
+      .flex-vertical {
+        @apply(--layout-vertical);
+        height: 500px;
+      }
+      .flexchild-vertical {
+        @apply(--layout-flex);
+      }
+      .flex-container {
+        display: flex;
+        flex-direction: column;
+        max-height: 510px;
+      }
+      #primitiveListContainer {
+        width: 500px;
+        float: right;
+        display:block;
+      }
+      section {
+        width: 100%;
+        height: 600px;
+        @apply(--layout-vertical);
+      }
+      section paper-dialog-scrollable {
+        @apply(--layout-flex);
+      }
+      .flex-horizontal {
+        @apply(--layout-horizontal);
+        width: 100%;
+      }
+      .flexchild-horizontal {
+        @apply(--layout-flex);
+      }
+      #viewer {
+        overflow:hidden;
+        padding-left: 32px;
+      }
+      #actionName {
+        padding-left: 32px;
+      }
+      #buttons {
+        padding-left: 32px;
+      }
+      .left-content {
+        display: flex;
+        line-height: 3;
+        align-items: center;
+      }
+      .left-content > .left-content-item-name {
+        flex: auto;
+      }
+      paper-button {
+        @apply(--paper-font-button);
+        border-radius: 2px;
+        padding: 6px 16px;
+        height: 36px;
+        vertical-align: middle;
+        display: inline-block;
+      }
+      paper-button:hover {
+        background-color: #e0e0e0;
+      }
+      paper-button.delete:hover {
+        background-color: #FFCDD2;
+      }
+      paper-icon-button {
+        vertical-align: middle;
+        display: inline-block;
+      }
+      paper-icon-button:hover {
+        background-color: #e0e0e0;
+      }
+      paper-icon-button.delete:hover {
+        background-color: #FFCDD2;
+      }
+      drag-sort-list {
+        margin: 15px;
+      }
+      drag-sort-list > div {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        padding: 6px 12px;
+        margin-bottom: 3px;
+      }
+      .title {
+        @apply(--paper-font-headline);
+        margin-bottom: 5px;
+        text-align: center;
+      }
+      .delete {
+        color: #D32F2F;
+      }
+
+      .backdrop {
+        background-color: #fff;
+      }
+      .primitiveList {
+        border-spacing: 0;
+          width: 100%;
+      }
+      .primitiveList th, td {
+        /*border-bottom: 1px solid var(--divider-color);*/
+        padding: 5px 10px;
+      }
+      .primitiveList th {
+        text-align: left;
+        padding: 15px;
+      }
+      .primitiveList tr:last-child td {
+        border-bottom: none;
+      }
+
+      .listDiv {
+        border-bottom: 1px solid var(--divider-color);
+        border-top: 1px solid var(--divider-color);
+
+      }
+    </style>
+
+    <div id='container' class='container flex-vertical'>
+      <paper-input id='actionName' label='Action name' class='programName flex' value='{{action_name}}' on-change='onNameChange'></paper-input>
+      <div id='container' class='flex-horizontal'>
+        <div id='viewer' class='flex'></div>
+        <div id='primitiveListContainer' >
+          <div class='title'>Primitive List</div>
+          <table id='primitiveList' class='primitiveList'>
+          <thead>
+            <tr>
+              <th>Primitives</th>
+              <th>Options</th>
+            </tr>
+          </thead>
+          </table>
+          <div class='flex-container' style='overflow:auto;'>
+            <ul id="dragList" style='list-style: none; padding: 5px; margin: 0px;'>
+              <template is='dom-repeat' items='{{primitives}}'>
+                <li draggable='true' on-dragstart='dragPrimitive' on-dragend='dropPrimitive' on-dragenter='getDestination' on-click='selectPrimitive'>
+                  <div class='listDiv' style='{{item.backgroundColor}}'>
+                    <div style='display: flex;'>
+                      <div style='flex:auto; line-height: 36px; vertical-align: middle; display: inline-block; '>{{item.name}}</div>
+                      <div style='flex:none;'>
+                        <paper-icon-button
+                            noink
+                            data-primitive$='{{item.number}}'
+                            on-tap='onRun'
+                            icon='av:play-circle-filled'>
+                        </paper-icon-button>
+                      </div>
+                      <div style='flex:none;'>
+                        <paper-icon-button
+                            noink
+                            data-primitive$='{{item.number}}'
+                            on-tap='onCopy'
+                            icon='content-copy'>
+                        </paper-icon-button>
+                      </div>
+                      <div style='flex:none;'>
+                        <paper-icon-button
+                            noink
+                            data-primitive$='{{item.number}}'
+                            on-tap='onEdit'
+                            icon='image:edit'
+                            disabled='{{item.editDisabled}}'>
+                        </paper-icon-button>
+                      </div>
+                      <div style='flex:none;'>
+                        <paper-icon-button
+                            class='delete'
+                            noink
+                            data-primitive$='{{item.number}}'
+                            on-tap='onDelete'
+                            icon='delete'>
+                        </paper-icon-button>
+                      </div>
+                      <div style='flex:none;'>
+                        <paper-icon-button
+                              noink
+                              data-primitive$='{{item.number}}'
+                              on-tap='toggleMarker'
+                              src='{{item.marker}}'>
+                        </paper-icon-button>
+                      </div>
+                    </div>
+                    <div class='collapsible' style='display: none;'>
+                      <div style='float: left; padding: 5px;'>
+                        <paper-input on-change='onPoseEdit' type='number' value='{{item.position.x}}'>
+                          <div prefix>x: </div>
+                        </paper-input>
+                        <paper-input on-change='onPoseEdit' type='number' value='{{item.position.y}}'>
+                          <div prefix>y: </div>
+                        </paper-input>
+                        <paper-input on-change='onPoseEdit' type='number' value='{{item.position.z}}'>
+                          <div prefix>z: </div>
+                        </paper-input>
+                      </div>
+                      <div style='float: right; padding: 5px;'>
+                        <paper-input on-change='onPoseEdit' type='number' value='{{item.orientation.r}}'>
+                          <div prefix>r: </div>
+                        </paper-input>
+                        <paper-input on-change='onPoseEdit' type='number' value='{{item.orientation.p}}'>
+                          <div prefix>p: </div>
+                        </paper-input>
+                        <paper-input on-change='onPoseEdit' type='number' value='{{item.orientation.y}}'>
+                          <div prefix>y: </div>
+                        </paper-input>
+                      </div>
+                    </div>
+                  </div>
+
+                </li>
+
+              </template>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id='buttons' class='flexchild-vertical'>
+        <paper-button raised id='execute_button' on-tap='execute'>
+          <iron-icon icon='av:play-circle-filled'></iron-icon>
+          Run
+        </paper-button>
+        <paper-button raised id='stop_execution_button' on-tap='stopExecution'>Stop Execution</paper-button>
+        <paper-button raised id='save_pose_button' on-tap='savePose'>Save Pose</paper-button>
+        <paper-button raised id='record_objects_button' on-tap='recordObjects'>Record Objects</paper-button>
+        <paper-button raised id='start_recording_button' on-tap='startRecording'>Start Recording Trajectory</paper-button>
+        <paper-button raised id='stop_recording_button' on-tap='stopRecording'>Stop Recording Trajectory</paper-button>
+        <paper-button raised id='open_hand_button' on-tap='openHand'>Open Hand</paper-button>
+        <paper-button raised id='close_hand_button' on-tap='closeHand'>Close Hand</paper-button>
+        <paper-button raised id='delete_all_button' on-tap='deleteAll'>Delete All Primitives</paper-button>
+        <paper-button raised id='delete_last_button' on-tap='deleteLast'>Delete Last Primitive</paper-button>
+      </div>
+    </div>
+
+    <paper-dialog id="statusDialog">
+      <h2>Status</h2>
+      <p>'{{statusMessage}}'</p>
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus>OK</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+
+    Polymer({
+      is: 'current-action',
+
+      properties: {
+        primitives: {
+          type: Array,
+          value: [],
+        },
+        globalOptions: {
+          type: Object,
+          value: function() {
+            return {};
+          },
+          notify: true,
+        },
+
+        config: {
+          computed: '_computeConfig(globalOptions, displays, sidebarOpened)',
+          notify: true,
+          type: Object,
+        },
+
+        displays: {
+          type: Array,
+          value: function() {
+            return [];
+          },
+        },
+        ros: {
+          type: Object,
+          observer: '_rosChanged',
+        },
+        sidebarOpened: {
+          type: Boolean,
+          value: true,
+        },
+        tfClient: Object, // The ROSLIB.TFClient
+        websocketUrl: {
+          type: String,
+          notify: true,
+          computed: '_computeWebsocketUrl(globalOptions.url)',
+        },
+        _viewer: Object, // The ROS3D viewer
+        _urdf: Object, // The ROS3D viewer
+        _grid: Object, // The ROS3D viewer
+        _im: Object, // The ROS3D viewer
+        expSrv: Object,
+        inputSrv: Object,
+        action_name : '',
+        expListener : Object,
+        showMarkerIcon : {
+          type: String,
+          value: '../icons/show_marker.png',
+        },
+        hideMarkerIcon : {
+          type: String,
+          value: '../icons/hide_marker.png',
+        },
+        dragSource : Object,
+        dragSourceId : Number,
+        dropTarget : Object,
+        dropTargetId : Number,
+        statusMessage : String
+      },
+
+      behaviors: [Polymer.IronResizableBehavior],
+
+      observers: [
+        '_fixedFrameChanged(globalOptions.fixedFrame)',
+      ],
+
+      _fixedFrameChanged: function(fixedFrame) {
+        if (this.tfClient) {
+          this.tfClient.fixedFrame = fixedFrame;
+          this.tfClient.updateGoal();
+        }
+      },
+
+      attached: function() {
+
+        if (screen.width <= 500) {
+            var viewer = document.getElementById('viewer');
+            viewer.style.display='none';
+        }
+
+        var hostname = window.location.hostname;
+        var that = this;
+        this.ros = new ROSLIB.Ros({
+          url : 'ws://' + hostname + ':9090'
+        });
+
+        var width = this.$.viewer.offsetWidth;
+        var height = 600;
+        this._viewer = new ROS3D.Viewer({
+          divID: 'viewer',
+          width: width,
+          height: height,
+          antialias: true,
+          background: '#78909C'
+        });
+
+        this._viewer.addObject(new ROS3D.Grid());
+
+        // Setup a client to listen to TFs.
+        this.tfClient = new ROSLIB.TFClient({
+          ros : this.ros,
+          angularThres : 0.01,
+          transThres : 0.01,
+          rate : 10.0,
+          fixedFrame : 'base_link'
+        });
+
+        this.markerClient = new ROS3D.MarkerArrayClient({
+          ros : this.ros,
+          tfClient : this.tfClient,
+          topic : '/visualization_marker_array',
+          rootObject : this._viewer.scene
+        });
+
+        // Setup the URDF client.
+        this.urdf = new ROS3D.UrdfClient({
+          ros : this.ros,
+          tfClient : this.tfClient,
+          path : 'http://resources.robotwebtools.org/',
+          rootObject : this._viewer.scene,
+          loader : ROS3D.COLLADA_LOADER_2
+        });
+
+        //IM client
+        this._im = new ROS3D.InteractiveMarkerClient({
+          ros : this.ros,
+          tfClient : this.tfClient,
+          path : 'http://resources.robotwebtools.org/',
+          topic : 'programmed_actions',
+          camera : this._viewer.camera,
+          rootObject : this._viewer.selectableObjects
+        });
+
+        this._im_2 = new ROS3D.InteractiveMarkerClient({
+          ros : this.ros,
+          tfClient : this.tfClient,
+          path : 'http://resources.robotwebtools.org/',
+          topic : 'world_objects',
+          camera : this._viewer.camera,
+          rootObject : this._viewer.selectableObjects
+        });
+
+        this.addEventListener('iron-resize', function() {
+          that.resize();
+        });
+
+        this.inputSrv = new ROSLIB.Service({
+          ros : this.ros,
+          name : '/gui_input',
+          serviceType : 'fetch_pbd_interaction/GuiInput'
+        });
+
+        this.expSrv = new ROSLIB.Service({
+          ros : this.ros,
+          name : '/get_session_state',
+          serviceType : 'fetch_pbd_interaction/GetSessionState'
+        });
+
+        var request = new ROSLIB.ServiceRequest({});
+
+        this.expSrv.callService(request, function(result) {
+          that.expCallback(that, result.state);
+        });
+
+        this.expListener = new ROSLIB.Topic({
+          ros : this.ros,
+          name : '/session_state',
+          messageType : 'fetch_pbd_interaction/SessionState'
+        });
+
+        this.expListener.subscribe(function(message) {
+          that.expCallback(that, message);
+        });
+
+        this.statusListener = new ROSLIB.Topic({
+          ros : this.ros,
+          name : '/fetch_pbd_status',
+          messageType : 'std_msgs/String'
+        });
+
+        this.statusListener.subscribe(function(message) {
+          that.statusCallback(that, message);
+        });
+      },
+
+      isAbove : function(source, target) {
+        if (source.parentNode == target.parentNode) {
+          for (var i = source; i; i = i.previousSibling) {
+            if (i === target) {
+              return true;
+            }
+          }
+        }
+        return false;
+      },
+
+      dragPrimitive : function(evt) {
+        this.dragSource = evt.target;
+        evt.dataTransfer.effectAllowed = 'move';
+        this.dragSourceId = evt.model.item.number;
+      },
+
+      getDestination : function (evt) {
+        this.dropTargetId = evt.model.item.number;
+        this.dropTarget = document.getElementsByTagName('li')[parseInt(this.dropTargetId)];
+      },
+
+      dropPrimitive : function(evt) {
+        var target = this.dropTarget;
+        var oldIndex = this.dragSourceId;
+        var newIndex = this.dropTargetId;
+
+        var request = new ROSLIB.ServiceRequest({
+          command : 'switch-primitive-order',
+          list_params : [parseInt(oldIndex), parseInt(newIndex)]
+        });
+        this.inputSrv.callService(request, function(result) {});
+        var primitives = this.primitives;
+        var moved = primitives[parseInt(oldIndex)];
+        primitives.splice(parseInt(oldIndex),1);
+        primitives.splice(parseInt(newIndex), 0, moved);
+        for (i = 0; i < primitives.length; i++) {
+          primitives[i].number = i + '';
+        }
+        this.primitives = [];
+        this.primitives = primitives;
+
+      },
+
+      selectPrimitive : function(evt) {
+        if (evt.target.tagName == "DIV") {
+          var request = new ROSLIB.ServiceRequest({
+            command : 'select-primitive',
+            param : evt.model.item.number
+          });
+          this.inputSrv.callService(request, function(result) {});
+        }
+      },
+
+      statusCallback : function(that, message) {
+        if (message.data != '' && screen.width > 500 ) {
+          that.statusMessage = message.data;
+          var statusDialog = document.getElementById('statusDialog');
+          statusDialog.open();
+        }
+      },
+
+      expCallback : function(that, message) {
+        that.action_name = message.action_names[message.current_action];
+        for (i = 0; i < that.primitives.length; i++) {
+          that.pop('primitives');
+        }
+        // var myNode = document.getElementById("dragList");
+        // while (myNode.firstChild) {
+        //     myNode.removeChild(myNode.firstChild);
+        // }
+        that.primitives = [];
+        var primitives = [];
+        for (i = 0; i < message.n_primitives; i++) {
+          var markerStatus;
+
+          if (message.marker_visibility[i]) {
+            markerStatus = that.showMarkerIcon;
+          }
+          else {
+            markerStatus = that.hideMarkerIcon;
+          }
+          var backgroundColor;
+          if (i == message.current_primitive){
+            backgroundColor = 'background-color: #A5D6A7;';
+          }
+          else{
+            backgroundColor = 'background-color: #FFFFFF;';
+          }
+          var primitive = {
+            name : message.primitive_names[i],
+            number: i + '',
+            marker: markerStatus,
+            editDisabled : !message.primitive_pose_editable[i],
+            position: {
+              x: message.positions[i].x,
+              y: message.positions[i].y,
+              z: message.positions[i].z
+            },
+            orientation: {
+              r: message.orientations[i].r,
+              p: message.orientations[i].p,
+              y: message.orientations[i].y
+            },
+            backgroundColor : backgroundColor
+          };
+          primitives.push(primitive);
+        }
+        that.primitives = primitives;
+      },
+
+      resize: function() {
+        if (this._viewer) {
+          var width = this.$.viewer.offsetWidth;
+          var height = 600;
+          this._viewer.resize(width, height);
+        }
+      },
+
+      onNameChange : function() {
+        var that = this;
+
+        var request = new ROSLIB.ServiceRequest({
+          command : 'update-action-name',
+          param : that.action_name
+        });
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      execute : function() {
+        var request = new ROSLIB.ServiceRequest({
+          command : 'execute-action'
+        });
+
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      stopExecution : function() {
+        var request = new ROSLIB.ServiceRequest({
+          command : 'stop-execution'
+        });
+
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      savePose : function() {
+        var request = new ROSLIB.ServiceRequest({
+          command : 'save-target'
+        });
+
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      startRecording : function() {
+        var request = new ROSLIB.ServiceRequest({
+          command : 'start-recording-trajectory'
+        });
+
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      stopRecording : function() {
+        var request = new ROSLIB.ServiceRequest({
+          command : 'stop-recording-trajectory'
+        });
+
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      openHand : function() {
+        var request = new ROSLIB.ServiceRequest({
+          command : 'open-hand'
+        });
+
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      closeHand : function() {
+        var request = new ROSLIB.ServiceRequest({
+          command : 'close-hand'
+        });
+
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      deleteLast : function() {
+        var request = new ROSLIB.ServiceRequest({
+          command : 'delete-last-primitive'
+        });
+
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      deleteAll : function() {
+        var request = new ROSLIB.ServiceRequest({
+          command : 'delete-all-primitives'
+        });
+
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      recordObjects : function() {
+        var request = new ROSLIB.ServiceRequest({
+          command : 'record-objects'
+        });
+
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      onEdit : function(evt) {
+        var number = parseInt(evt.model.item.number);
+        var target = document.getElementsByClassName('collapsible')[number];
+        if (target.style.display == 'table-row') {
+          target.style.display='none';
+        }
+        else {
+          target.style.display='table-row';
+        }
+      },
+
+      onPoseEdit : function(evt) {
+        var primitiveId = evt.model.item.number;//.action;
+        var request = new ROSLIB.ServiceRequest({
+          command : 'pose-edited',
+          param : primitiveId,
+          position : {
+            x : parseFloat(evt.model.item.position.x),
+            y : parseFloat(evt.model.item.position.y),
+            z : parseFloat(evt.model.item.position.z)
+          },
+          orientation : {
+            r : parseFloat(evt.model.item.orientation.r),
+            p : parseFloat(evt.model.item.orientation.p),
+            y : parseFloat(evt.model.item.orientation.y)
+          },
+
+        });
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      onCopy : function(evt) {
+        var primitiveId = evt.model.item.number;//.action;
+        var request = new ROSLIB.ServiceRequest({
+          command : 'copy-primitive',
+          param : primitiveId
+        });
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      onRun : function(evt) {
+        var primitiveId = evt.model.item.number;
+        var request = new ROSLIB.ServiceRequest({
+          command : 'execute-primitive',
+          param : primitiveId
+        });
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      onDelete : function(evt) {
+        var primitiveId = evt.model.item.number;
+        var request = new ROSLIB.ServiceRequest({
+          command : 'delete-primitive',
+          param : primitiveId
+        });
+        this.inputSrv.callService(request, function(result) {});
+      },
+
+      toggleMarker : function(evt) {
+        var primitiveId = evt.model.item.number;
+        var guiCommand;
+        if (this.primitives[parseInt(primitiveId)].marker === this.showMarkerIcon){
+          guiCommand = 'hide-primitive-marker';
+        }
+        else {
+          guiCommand = 'show-primitive-marker';
+        }
+        var request = new ROSLIB.ServiceRequest({
+          command : guiCommand,
+          param : primitiveId
+        });
+        this.inputSrv.callService(request, function(result) {});
+      },
+    });
+  </script>
+</dom-module>
