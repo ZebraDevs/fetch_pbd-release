@@ -1,0 +1,34 @@
+ros-indigo-fetch-social-gaze (0.0.4-0saucy) saucy; urgency=high
+
+
+
+ -- Sarah Elliott <sksellio@gmail.com>  Fri, 09 Sep 2016 07:00:00 -0000
+
+ros-indigo-fetch-social-gaze (0.0.3-0saucy) saucy; urgency=high
+
+
+
+ -- Sarah Elliott <sksellio@gmail.com>  Fri, 09 Sep 2016 07:00:00 -0000
+
+ros-indigo-fetch-social-gaze (0.0.2-0saucy) saucy; urgency=high
+
+
+
+ -- Sarah Elliott <sksellio@gmail.com>  Fri, 09 Sep 2016 07:00:00 -0000
+
+ros-indigo-fetch-social-gaze (0.0.1-0saucy) saucy; urgency=high
+
+  * Update package.xml
+  * License and documentation updates
+  * Getting ready to be released
+  * Added markers being relative to each other
+  * Huge reorganisation. Now working.
+  * Huge reorganisation. Now working.
+  * Cleaning up code
+  * Working, all functionality of PR2 PbD
+  * First commit of port of PbD to Fetch. Things work. Rough around the edges.
+  * Contributors: Russell Toris, Sarah Elliott
+
+ -- Sarah Elliott <sksellio@gmail.com>  Fri, 09 Sep 2016 07:00:00 -0000
+
+
