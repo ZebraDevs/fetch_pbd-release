@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>fetch_arm_control</name>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
   <description>The fetch_arm_control package</description>
   <author email="sksellio@gmail.com">Sarah Elliott</author>
   <maintainer email="sksellio@gmail.com">Sarah Elliott</maintainer>
@@ -14,6 +14,7 @@
   <build_depend>geometry_msgs</build_depend>
   <build_depend>message_generation</build_depend>
   <build_depend>actionlib</build_depend>
+  <build_depend>tf</build_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>rospy</run_depend>
