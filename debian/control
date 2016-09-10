@@ -1,0 +1,12 @@
+Source: ros-indigo-fetch-arm-control
+Section: misc
+Priority: extra
+Maintainer: Sarah Elliott <sksellio@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-indigo-actionlib, ros-indigo-catkin, ros-indigo-geometry-msgs, ros-indigo-message-generation, ros-indigo-roscpp, ros-indigo-rospy
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-indigo-fetch-arm-control
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-geometry-msgs, ros-indigo-message-runtime, ros-indigo-rospy, ros-indigo-std-msgs, ros-indigo-tf
+Description: The fetch_arm_control package
