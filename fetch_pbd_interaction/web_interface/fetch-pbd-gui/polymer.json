@@ -1,8 +1,0 @@
-{
-  "entrypoint": "index.html",
-  "shell": "elements/pbd-gui.html",
-  "fragments": [
-    "elements/my-actions.html",
-    "elements/current-action.html"
-  ]
-}
