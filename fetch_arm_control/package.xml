@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package>
+  <name>fetch_arm_control</name>
+  <version>0.0.6</version>
+  <description>The fetch_arm_control package</description>
+  <author email="sksellio@gmail.com">Sarah Elliott</author>
+  <maintainer email="sksellio@gmail.com">Sarah Elliott</maintainer>
+  <maintainer email="rtoris@fetchrobotics.com">Russell Toris</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>actionlib</build_depend>
+  <build_depend>tf</build_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>tf</run_depend>
+  <run_depend>message_runtime</run_depend>
+
+  <export>
+  </export>
+
+</package>
