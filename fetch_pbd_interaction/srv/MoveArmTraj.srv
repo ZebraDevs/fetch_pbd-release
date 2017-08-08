@@ -1,4 +1,0 @@
-fetch_pbd_interaction/ArmState[] arm_states
-float64[] times
----
-bool success

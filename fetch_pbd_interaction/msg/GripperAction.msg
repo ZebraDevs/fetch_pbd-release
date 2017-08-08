@@ -1,1 +1,0 @@
-fetch_arm_control/GripperState gripper
