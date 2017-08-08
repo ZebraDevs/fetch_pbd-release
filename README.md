@@ -1,3 +1,29 @@
+## fetch_pbd (indigo) - 0.0.8-0
+
+The packages in the `fetch_pbd` repository were released into the `indigo` distro by running `/usr/bin/bloom-release --rosdistro indigo --track indigo fetch_pbd` on `Tue, 08 Aug 2017 20:53:17 -0000`
+
+These packages were released:
+- `fetch_arm_control`
+- `fetch_pbd_interaction`
+- `fetch_social_gaze`
+
+Version of package(s) in repository `fetch_pbd`:
+
+- upstream repository: https://github.com/fetchrobotics/fetch_pbd.git
+- release repository: https://github.com/fetchrobotics/fetch_pbd-release.git
+- rosdistro version: `0.0.7-0`
+- old version: `0.0.7-0`
+- new version: `0.0.8-0`
+
+Versions of tools used:
+
+- bloom version: `0.5.22`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.5`
+- rosdistro version: `0.4.7`
+- vcstools version: `0.1.38`
+
+
 ## fetch_pbd (indigo) - 0.0.7-0
 
 The packages in the `fetch_pbd` repository were released into the `indigo` distro by running `/usr/bin/bloom-release --rosdistro indigo --track indigo fetch_pbd` on `Fri, 21 Apr 2017 02:14:39 -0000`
